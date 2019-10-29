@@ -1,0 +1,62 @@
+#!/usr/bin/env python3.6
+
+import subprocess
+import argparse
+from contextlib import suppress
+
+
+def main(core, interrupts, nonzero):
+    result = subprocess.run(
+        'cat /proc/interrupts',
+        shell=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=True)
+    output = result.stdout.decode()
+    rows = output.splitlines()
+    num_cores = len(rows[0].split())
+    if core >= num_cores:
+        raise ValueError('Not a valid core number.')
+
+    def format(row):
+        items = row.split()
+        with suppress(IndexError):
+            name = items[0]
+            number = items[core + 1]
+            detail = ' '.join(items[num_cores + 1:])
+            if not nonzero or int(number) > 0:
+                print('{:<4}  {:^15} {}'.format(name, number, detail))
+
+    rows = rows[1:]
+    if interrupts:
+        names = [row.split(maxsplit=1)[0].strip(':') for row in rows]
+        for interrupt in interrupts:
+            format(rows[names.index(interrupt)])
+        return
+
+    for row in rows:
+        format(row)
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '-c',
+        '--core',
+        required=True,
+        type=int,
+        help='print interrupts for this core (0 based)')
+    parser.add_argument(
+        '-i',
+        '--interrupt',
+        nargs='+',
+        help='name/number of the interrupt')
+    parser.add_argument(
+        '-n',
+        '--nonzero',
+        action='store_true',
+        help='only print non zero interrupts'
+    )
+
+    args = parser.parse_args()
+    main(args.core, args.interrupt, args.nonzero)

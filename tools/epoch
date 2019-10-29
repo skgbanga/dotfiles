@@ -1,0 +1,25 @@
+#!/usr/bin/env python3.6
+
+import argparse
+from datetime import datetime
+
+
+# assume that seconds are going to occupy 10 digits
+def sub_seconds(epoch):
+    s = str(epoch)
+    return s[10:]
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('epoch', type=int, help='epoch timestamp (in nanos)')
+    args = parser.parse_args()
+
+    epoch = args.epoch
+
+    sub_second_len = len(sub_seconds(epoch))
+    multiplier = 10 ** sub_second_len
+
+    dt = datetime.fromtimestamp(epoch // multiplier)
+    s = dt.strftime('%Y%m%d-%H:%M:%S')
+    s += '.' + str(int(epoch % multiplier)).zfill(sub_second_len)
+    print(s)

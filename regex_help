@@ -1,0 +1,25 @@
+| or
+. any character
+
+^ start of the character
+$ end of the line
+\< start of the word
+\> end of the word
+
+* zero or more
++ one of more
+? zero or one
+{number} exactly number
+
+\| literarlly |
+\$ literally dollar sign
+\s white space
+\S anything but white space
+\w a 'word' character
+\W anthing but 'word'
+
+[abc] a|b|c
+[d-j] d|e|f|g|h|i|j
+[^abc] anything but a, b, c
+
+() \1 refers back to first set of parens

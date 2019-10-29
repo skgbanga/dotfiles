@@ -1,0 +1,14 @@
+#!/usr/bin/env python3.6
+
+import argparse
+from datetime import datetime
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("timestamp", help="human readable timestamp")
+    args = parser.parse_args()
+
+    timestamp = args.timestamp
+    dt = datetime.strptime(timestamp[:17], "%Y%m%d-%H:%M:%S")
+    print(int(dt.timestamp()), end='')
+    print(timestamp[18:])
