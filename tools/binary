@@ -1,0 +1,29 @@
+#!/usr/bin/env python3.6
+
+
+import argparse
+import struct
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('number', help='number whose binary is to be output')
+    args = parser.parse_args()
+
+    number = args.number
+
+    try:
+        x = int(number)
+        print('{0:b}'.format(x))
+
+    except ValueError:
+        x = float(number)
+        packed = struct.pack('!f', x)
+        nums = []
+        for c in packed:
+            s = '{0:b}'.format(c)
+            nums.append(s.rjust(8, '0'))
+
+        rep = ''.join(nums)
+        print(rep[0], end=' ')
+        print(rep[1:9], end=' ')
+        print(rep[9:])
