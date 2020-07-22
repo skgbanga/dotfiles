@@ -26,6 +26,7 @@ Plugin 'fisadev/vim-isort'                " isort
 Plugin 'tell-k/vim-autopep8'              " auto pep8
 Plugin 'junegunn/goyo.vim'
 Plugin 'ambv/black'
+Plugin 'yegappan/disassemble'
 
 Plugin 'tpope/vim-fugitive'   " do git within tower
 Plugin 'tpope/vim-vinegar'    " navigate directory structure within vim
@@ -81,9 +82,13 @@ set splitright
 
 " All the leader mappings should go here
 let mapleader = ","
-nnoremap <Leader>c :AsyncRun CXX=/opt/vatic/bin/g++ cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=~/.local/ -DCMAKE_POSITION_INDEPENDENT_CODE=ON -GNinja -B build<CR>
+nnoremap <Leader>c :YcmCompleter FixIt<CR>
 nnoremap <Leader>f :call FormatFile()<CR>
-nnoremap <Leader>d "_dd
+nnoremap <Leader>d :call ShowAsm()<CR>
+
+let g:clang_format_fallback_style = "Chromium"
+
+
 
 " All the non-leader mapping should go here
 nnoremap Y y$
@@ -94,7 +99,7 @@ inoremap <C-U> <C-G>u<C-U> "?
 nnoremap <C-h> :YcmCompleter GoToImprecise<CR>
 nnoremap <C-j> :YcmCompleter GoToDefinitionElseDeclaration<CR>
 nnoremap <C-k> <C-]>
-nnoremap <f6> :!/usr/bin/ctags -R --exclude=.git --exclude=thirdparty --exclude=tools .<CR>
+nnoremap <f6> :!/home/sandeep/tools/bin/ctags -R --exclude=.git --exclude=thirdparty --exclude=tools .<CR>
 nnoremap <C-t> :TagbarToggle<CR>
 
 " When editing a file, always jump to the last known cursor position.
@@ -144,7 +149,8 @@ let g:ycm_confirm_extra_conf = 0
 let g:ycm_filetype_blacklist = {
   \ 'ctrlp' : 1,
   \ 'netrw' : 1,
-  \ 'cmake' : 1
+  \ 'cmake' : 1,
+  \ 'asm'   : 1
   \ }
 
 " Easy motion config
@@ -201,6 +207,7 @@ let g:ale_cpp_cpplint_options = git_path_formatted . '/buildlib/misc-scripts/cpp
 let g:ale_linters = {
 \   'cpp': [],
 \   'python': ['pylint'],
+\   'asm': []
 \}
 
 let g:ale_fixers = {
@@ -212,8 +219,16 @@ function! FormatFile()
     let l:lines="all"
     py3file /home/sandeep/clang-format.py
   elseif (&filetype == 'python')
-    execute "ALEFix"
+    execute "Black"
   endif
+endfunction
+
+
+function! ShowAsm()
+  w
+  " silent 0r !g++ -g -c -O2 src/ion.cpp
+  silent 0r !g++ -std=c++1z -g -c -O3 main.cpp
+  Disassemble main.o
 endfunction
 
 "moving between windows
@@ -227,6 +242,9 @@ function! WindowNumber()
     let str=winnr()
     return str
 endfunction
+
+packadd termdebug
+let g:termdebug_wide=1
 
 set laststatus=2
 set statusline=%<%f\ win:%{WindowNumber()}\ br:%{fugitive#statusline()}\ %h%m%r%=%-14.(%l,%c%V%)\ %P

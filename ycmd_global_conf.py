@@ -11,14 +11,15 @@ from itertools import dropwhile, takewhile
 # compilation database found
 flags = [
     "-fexceptions",
-    "-DNDEBUG",
-    "-std=c++17",
+    # "-DNDEBUG",
+    "-std=c++2a",
     "-x",
     "c++",
-    "-Wno-unused-parameter",
-    "-Wall",
-    "-Wextra",
-    "-Wpedantic",
+    # "-Wno-unused-parameter",
+    # "-Wall",
+    # "-Wextra",
+    # "-Wpedantic",
+    "-Wno-attributes",
     "-I",
     ".",
     "-I",
@@ -27,6 +28,8 @@ flags = [
     "../../",
     "-I",
     "/home/sandeep/workspace/dev/zen/include/",
+    "-I",
+    "/opt/vatic/include/"
 ]
 
 # Flags that always get added
@@ -278,7 +281,7 @@ def get_flags_from_database(filename, database_dir):
         compilation_info.compiler_flags_, compilation_info.compiler_working_dir_
     )
 
-    final_flags = final_flags + load_system_includes()
+    final_flags = final_flags + load_system_includes() + flags
 
     return final_flags
 

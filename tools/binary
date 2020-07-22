@@ -13,7 +13,12 @@ if __name__ == '__main__':
 
     try:
         x = int(number)
-        print('{0:b}'.format(x))
+        if x < 0:
+            # assume 32 bits
+            large = 1 << 32
+            x = large + x
+        s = '{0:b}'.format(x)
+        print(len(s), s)
 
     except ValueError:
         x = float(number)
