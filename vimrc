@@ -76,7 +76,7 @@ set listchars=tab:>-,trail:-
 set hidden
 set t_Co=256
 set autowrite
-set mouse=a
+set mouse=r
 set directory=~/tmp
 set splitright
 

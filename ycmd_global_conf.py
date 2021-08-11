@@ -11,7 +11,6 @@ from itertools import dropwhile, takewhile
 # compilation database found
 flags = [
     "-fexceptions",
-    # "-DNDEBUG",
     "-std=c++2a",
     "-x",
     "c++",
@@ -26,10 +25,6 @@ flags = [
     "../",
     "-I",
     "../../",
-    "-I",
-    "/home/sandeep/workspace/dev/zen/include/",
-    "-I",
-    "/opt/vatic/include/"
 ]
 
 # Flags that always get added
